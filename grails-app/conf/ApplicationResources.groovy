@@ -1,27 +1,38 @@
 modules = {
     application {
-        dependsOn 'jquery, jqueryui'
+        dependsOn 'jquery, jqueryui, html5'
         //defaultBundle false
-        resource url:'js/expert.js', disposition: 'head'
-        resource url:'js/selection-map.js', disposition: 'head'
-        resource url:'js/wms.js', disposition: 'head'
-        resource url:'js/combobox.js', disposition: 'head'
-        resource url:'js/jquery.ba-bbq.min.js', disposition: 'head'
-        resource url:'js/keydragzoom.js', disposition: 'head'
+        resource url: 'js/combobox.js'
+    }
+
+    viewer {
+        resource url: 'js/tviewer.js'
+        resource url: 'css/tview.css'
+        resource url: 'css/colorbox.css'
     }
 
     jquery {
-        resource url:'js/jquery-1.7.1.min.js', disposition: 'head'
+        resource url: 'js/jquery-1.10.2.min.js'
+    }
+
+    map {
+        resource url: 'js/jquery.ba-bbq.min.js'
+        resource url: 'js/expert.js'
+        resource url: 'js/selection-map.js'
+        resource url: 'js/wms.js'
+        resource url: 'js/keydragzoom.js'
     }
 
     jqueryui {
-        resource url:'js/jquery-ui-1.8.19.custom.min.js', disposition: 'head'
+        resource url: 'js/jquery.colorbox-min.js'
+        resource url: 'js/jquery.ba-bbq.min.js'
+        resource url: 'js/jquery-ui-1.11.1.min.js'
     }
 
     tooltipster {
         dependsOn 'jquery'
         resource url:'css/tooltipster.css'
-        resource url:'js/jquery.tooltipster.min.js', disposition: 'head'
+        resource url: 'js/jquery.tooltipster.min.js'
     }
 
     html5 {

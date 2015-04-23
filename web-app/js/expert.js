@@ -101,10 +101,12 @@ var customDepth = {
     },
     // set custom widgets to reflect selected bathome
     setCustomToBathome: function () {
-        var matcher = this.$bathome.val().match(/(\d+)-(\d+)/);
-        this.setMinDepth(matcher[1]);
-        this.setMaxDepth(matcher[2]);
-        this.$slider.slider('values', [matcher[1],matcher[2]]);
+        if (this.$bathome.val()) {
+            var matcher = this.$bathome.val().match(/(\d+)-(\d+)/);
+            this.setMinDepth(matcher[1]);
+            this.setMaxDepth(matcher[2]);
+            this.$slider.slider('values', [matcher[1], matcher[2]]);
+        }
     },
     setFromQuery: function (minDepth, maxDepth) {
         var $bathome = $('#bathome'),

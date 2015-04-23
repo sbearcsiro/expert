@@ -1,9 +1,9 @@
 package au.org.ala.expert
 
 import grails.converters.JSON
-import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
-import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.ContentType
+import groovyx.net.http.HTTPBuilder
+import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 
 class WebService {
 
@@ -43,6 +43,34 @@ class WebService {
             def error = [error: "Failed to get json from web service. ${e.getClass()} ${e.getMessage()} URL= ${url}."]
             log.error(error.error,e)
             return error
+        }
+    }
+
+    def doPost(String url, String port, String postBody) {
+        def conn = new URL(url).openConnection()
+        try {
+            conn.setDoOutput(true)
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream())
+            wr.write(postBody)
+            wr.flush()
+            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            def resp = ""
+            while ((line = rd.readLine()) != null) {
+                resp += line
+            }
+            rd.close()
+            wr.close()
+            return [error: null, resp: JSON.parse(resp)]
+        } catch (SocketTimeoutException e) {
+            def error = [error: "Timed out calling web service. URL= \${url}."]
+            log.error(error.error, e)
+            return error as JSON
+        } catch (Exception e) {
+            def error = [error: "Failed calling web service. ${e.getClass()} ${e.getMessage()} ${e} URL= ${url}."]
+            log.error(error.error, e)
+            return error as JSON
         }
     }
 

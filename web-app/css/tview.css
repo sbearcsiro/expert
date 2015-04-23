@@ -1,28 +1,106 @@
+body {
+    background-color: white;
+}
+
 .link {
     text-decoration: underline;
     cursor: pointer;
 }
 
+/* banners */
+.family-list #page-header hgroup {
+    background: url("../images/fishmap-banner-family-list.jpg") white center no-repeat;
+}
+
+.species-list #page-header hgroup {
+    background: url("../images/fishmap-banner-species-list.jpg") white center no-repeat;
+}
+
+.species-data #page-header hgroup {
+    background: url("../images/fishmap-banner-species-data.jpg") white center no-repeat;
+}
+
+#page-header hgroup {
+    height: 136px;
+    color: transparent; /* only for text readers - visual title is in the banner image */
+}
+
+div.no-top {
+    padding-top: 0;
+    width: 972px;
+}
+
+#controls {
+    display: inline;
+}
+
+#controls label {
+    font-size: 12px;
+    width: auto;
+    display: inline;
+}
+
+#controls select {
+    font-size: 11px;
+    height: 18px;
+    width: auto;
+    display: inline;
+    margin-bottom: 0px;
+}
+
+#page-header h2 {
+    font-size: 1.6em;
+    padding: 10px 0 0 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#breadcrumb {
+    margin-top: -15px;
+    color: #007c84;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
 /* layout table */
 
-table.taxonList {
+thead, thead th {
+    background-color: white;
+}
+
+th {
+    vertical-align: middle;
+}
+
+table.taxonList, table.taxonData {
     width: 100%;
     background-color: white;
 }
 
+table.taxonList {
+    table-layout: fixed;
+    width: 972px;
+}
+
 table.taxonList td {
     text-align: left;
-    vertical-align: middle;
+}
+
+table.taxonList td.mainImage {
+    text-align: center;
+    width: 400px;
+}
+
+#tdCaabCode {
+    width: 70px;
 }
 
 img.list {
     max-width: 285px;
-    max-height: 150px;
+    /*max-height: 150px;*/
 }
 
 img.dist {
     max-width: 200px;
-    max-height: 100px;
 }
 
 table.taxonList td:first-child {
@@ -33,22 +111,35 @@ table.genera td:first-child {
     text-align: left;
 }
 
-table.taxonList td:last-child, th:last-child {
-    padding-right: 15px;
-}
-
 table.taxonList > tbody > tr > td:nth-child(2) a {
     font-weight: bold;
 }
 
-table.taxonList > tbody > tr {
+table.taxonList > tbody > tr, table.taxonList > thead > tr {
     border-bottom: 3px solid #F0F0E8;/*#FaF9F2;*/
 }
+
+table.taxonData > tbody > tr, table.taxonList > thead > tr {
+    border-bottom: 1px solid #F0F0E8; /*#FaF9F2;*/
+}
+
+table.taxonList > thead > tr, table.taxonData > thead > tr {
+    border-top: 3px solid #F0F0E8;
+}
+
 /*table.taxonList tr:nth-child(even) {
     background-color: #FaF9F2;
 }*/
 
 /* image */
+a.imageContainer {
+    text-align: center;
+}
+
+a.no-image {
+    cursor: default;
+}
+
 table.taxonList span.rights {
     font-size: 8px;
 }
@@ -58,34 +149,19 @@ table.taxonList span.rights {
     padding-bottom: 3px;
 }
 
-details {
+div.gContent {
     display: none;
 }
 
-summary {
+div.summary {
     font-weight: bold;
     font-size: larger;
+    text-align: center;
 }
 
-details summary::-webkit-details-marker {
-    display: none;
-}
-
-dt, dd {
-    display: inline;
-}
-
-dd {
-    padding-left: 4px;
-}
-
-dd::after {
-    content: "\a";
-    white-space: pre;
-}
-
-dt::after {
-    content: ":";
+span.dt {
+    font-weight: bold;
+    padding-right: 4px;
 }
 
 #cboxLoadedContent {
@@ -104,58 +180,106 @@ dt::after {
 }
 
 #tlName {
-    width: 20%;
-}
-
-#tlCommonName {
-    width: 20%;
+    width: 15%;
 }
 
 #tlImage {
     text-align: center;
-    width: 33%;
+    width: 40%;
 }
 
 #tlGenera {
-    width: 12%;
+    width: 30%;
 }
 
-#toggleGenera {
-    float: right;
-    padding-right: 20px;
+/* for data table */
+#tdName {
+    width: 30%;
 }
+
+/* names */
+div.name {
+    font-size: 16px;
+    padding-bottom: 3px;
+}
+
+div.common {
+    font-size: 16px;
+    padding-bottom: 8px;
+}
+
 /* genus */
 img.thumb {
     max-width: 75px;
     max-height: 75px;
+    display: block;
+}
+
+img.no-image-small {
+    display: block;
+    padding-bottom: 10px;
+}
+
+td.genera {
+    width: 374px;
 }
 
 table.genera {
-    display: none;
+    table-layout: fixed;
+    width: 341px;
     margin: 0;
     padding: 0;
 }
 
 table.genera td {
-    /*text-align: center;*/
-    padding: 0;
+    padding: 0 10px 0 0;
 }
 
-table.genera td a {
+.align-left {
+    text-align: left;
+}
+
+table.genera td {
+    vertical-align: bottom;
+}
+
+span.tight {
+    font-family: 'Arial Narrow', Arial, Helvetica, sans-serif;
+}
+
+span.veryTight {
+    font-size: 0.8em;
+}
+
+/* distribution map */
+
+div.distribution-popup {
+    text-align: left;
+}
+
+div.distribution-popup a {
     position: relative;
-    top: -10px;
+    top: -20px;
+    left: 10px;
+}
+
+div.distribution-popup div.details {
+    position: relative;
+    top: -15px;
 }
 
 /* pagination */
 #pagination ul {
     display: inline-block;
+    width: 90%;
+    text-align: center;
 }
 
 #pagination li {
     display: inline;
     list-style: none;
     font-size: 13px;
-    padding: 0 5px;
+    padding: 0 4px;
 }
 
 #pagination li a {
@@ -185,9 +309,18 @@ li.currentPage {
 /* search controls */
 #controls {
     float: right;
-    padding-right: 10px;
+    padding: 2px 0;
+    /*width: 927%;*/
 }
 
 #controls label {
     margin-left: 5px;
+}
+
+#viewLinks {
+    padding: 0;
+}
+
+#checkboxButtons {
+    margin-left: 190px;
 }

@@ -1,5 +1,3 @@
-import net.sf.ehcache.search.Results
-
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -76,15 +74,32 @@ if (!spatial.wms.cache.url) {
 if (!spatial.layers.service.url) {
     spatial.layers.service.url = spatial.baseURL + "/layers-service"
 }
-if (!headerAndFooter.baseURL) {
-    headerAndFooter.baseURL = /*"http://localhost/~markew/commonui"//*/"http://www2.ala.org.au/commonui"
-}
 
 /******************************************************************************\
  *  APP CONFIG
  \******************************************************************************/
+
+// config for dr803 (fishmaps)
+/*
 distribution.maps.dataResourceUid = 'dr803'
 image.source.dataResourceUid = 'dr660'
+include.fish = true
+include.area.name = false
+include.appName = FishMap
+include.introText = 'This tool searches ‘compiled distributions\' for marine fishes inhabiting Australia’s\n' +
+        '    continental shelf and slope waters. These are maps of the areas where a species may be expected to be found\n' +
+        '    (rather than searching only collection or observation records which have false absences, and may contain\n' +
+        '    identifications that are out of date). The maps are developed by a person or persons with expert knowledge\n' +
+        '    of the group.'
+*/
+
+// config for dr2099 (species of national environmental significance)
+distribution.maps.dataResourceUid = 'dr2099'
+image.source.dataResourceUid = ''
+include.fish = false
+include.area.name = true
+include.appName = 'Species of National Environmental Significance'
+include.introText = 'This tool searches Species of National Environmental Significance.'
 
 /******************************************************************************\
  *  SECURITY
@@ -153,18 +168,10 @@ environments {
     }
     development {
         grails.host = "localhost"
-        //grails.host = "woodfired.ala.org.au"
         grails.serverURL = "http://${grails.host}:8080/${appName}"
 
-        //results.cache.baseUrl = grails.serverURL + "/results"
-        //results.cache.baseUrl = "http://fish.ala.org.au/results"
-        //explorer.baseUrl = "http://taxaexp.ala.org.au"
-
-
         results.cache.baseUrl = grails.serverURL + "/results"
-        explorer.baseUrl = "http://${grails.host}:8082/tviewer"
-        //results.cache.baseUrl = "http://130.56.248.132/results"
-        //explorer.baseUrl = "http://130.56.248.132/tviewer"
+        explorer.baseUrl = grails.serverURL
     }
     test {
         grails.host = "130.56.248.132"

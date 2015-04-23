@@ -39,7 +39,7 @@ class MetadataService {
             return imcraWktCache[pid]
         }
 
-        def wkt = webService.get("http://spatial.ala.org.au/ws/shape/wkt/${pid}")
+        def wkt = webService.get(grailsApplication.config.spatial.layers.service.url + "/shape/wkt/${pid}")
 
         imcraWktCache.put pid, wkt
         log.debug wkt
@@ -48,6 +48,8 @@ class MetadataService {
 
     static familiesCache = []
     static groupsCache = []
+    static idsCache = []
+    static allCache = []
 
     def loadFamiliesAndGroups() {
         def all = webService.getJson(grailsApplication.config.spatial.layers.service.url +
@@ -62,6 +64,12 @@ class MetadataService {
         groupsCache = []
         // add each unique name to cache
         all.each {
+            //all
+            allCache << it
+
+            //ids
+            idsCache << it.geom_idx
+
             // families
             if (it.family == "") log.debug it.scientific + " has blank family"
             if (it.family == null) log.debug it.scientific + " has null family"
@@ -78,17 +86,31 @@ class MetadataService {
     }
 
     def getAllFamilies = {
-        if (!familiesCache) {
+        if (allCache.isEmpty()) {
             loadFamiliesAndGroups()
         }
         return familiesCache
     }
 
     def getAllGroups = {
-        if (!groupsCache) {
+        if (allCache.isEmpty()) {
             loadFamiliesAndGroups()
         }
         return groupsCache
+    }
+
+    def getAllIds = {
+        if (allCache.isEmpty()) {
+            loadFamiliesAndGroups()
+        }
+        return idsCache
+    }
+
+    def getAll = {
+        if (allCache.isEmpty()) {
+            loadFamiliesAndGroups()
+        }
+        return allCache
     }
 
     static localities = [

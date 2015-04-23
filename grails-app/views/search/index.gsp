@@ -1,86 +1,123 @@
 <%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
-<!DOCTYPE html>
 <html>
 <head>
-    <title>Search | FishMap | Atlas of Living Australia</title>
-    <meta name="layout" content="ala2"/>
+    <title>Search | ${grailsApplication.config.include.appName} | Atlas of Living Australia</title>
+
+    <meta name="layout" content="main"/>
+
     <link rel="stylesheet" type="text/css" media="screen" href="${resource(dir:'css',file:'expert.css')}" />
     <link rel="stylesheet" href="${resource(dir:'css/smoothness',file:'jquery-ui-1.8.19.custom.css')}" type="text/css" media="screen"/>
+
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=drawing"></script>
-    <r:require modules="jquery, jqueryui, tooltipster, application"/>
-    <r:layoutResources />
+
+    <r:require modules="jquery, jqueryui, tooltipster, application, map"/>
+
 </head>
 <body class="search">
 <header id="page-header">
     <div class="inner">
-        <hgroup>
-            <h1 title="fishmap - find Australian marine fishes"></h1>
-        </hgroup>
+        <g:if test="${grailsApplication.config.include.fish}">
+            <hgroup>
+                <h1 title="fishmap - find Australian marine fishes"></h1>
+            </hgroup>
+        </g:if>
+
+        <g:if test="${!grailsApplication.config.include.fish}">
+            <br/>
+
+            <h1 title="${grailsApplication.config.include.appName} - Visual explorer - species list">${grailsApplication.config.include.appName} - Visual explorer - species list</h1>
+            <br/>
+        </g:if>
         <nav id="breadcrumb"><ol><li class="last">Search</li></ol></nav>
     </div>
 </header>
 <div class="inner">
     <section id="search">
-        <p class="searchInstructions">Select depth, fish group and location and press the 'Search' button below or
+        <p class="searchInstructions">
+            <g:if test="${grailsApplication.config.include.fish}">
+                Select depth, fish group and location
+            </g:if>
+            <g:if test="${!grailsApplication.config.include.fish}">
+                Select location
+            </g:if>
+            and press the 'Search' button below or
             use the <span style="padding: 0;" class="toggleAdvanced
             link">advanced search</span><span class="sea">&gt;</span>.<br>
             <span id="advWarning"><r:img uri="/images/skin/warning.png" style="padding-right:4px;"/>Some advanced criteria are hidden.</span>
         </p>
         <g:form action="search" class="searchGroup">
-            <div class="search-block">
-                <g:set var="bathomeTitle" value="Select broad depth category or use advanced search to set custom depth range."/>
-                <label for="bathome" class="mainLabel tooltip" title="${bathomeTitle}">Depth</label>
-                <g:select name="bathome" class="tooltip" from="${bathomeValues}" title="${bathomeTitle}"
-                          value="${criteria.bathome ?: 'coastal/shallow water (0-40m)'}"/>
-                <div class="advanced top-pad tooltip" id="advancedDepthSearch" title="Set custom depth range using the sliders or the value boxes.">
-                    <span>OR</span>
-                    <label style="padding-right: 5px;">Custom depth range (m)</label>
-                    Min: <g:textField name="minDepth" class="depthInput" value="${criteria.minDepth}"/>
-                    Max: <g:textField name="maxDepth" class="depthInput" value="${criteria.maxDepth}"/>
-                    <span id="plusMarker"></span>
-                    <div id="depthRangeSlider"></div>
-                </div>
-            </div>
-            <div class="search-block">
-                <g:set var="groupTitle" value="Commonly recognisable fish ‘groupings’ are included. To search for a specific family or multiple families click on advanced search link above and select from ‘only these families’ pull-down menu, then click ‘+’ button."/>
-                <label for="fishGroup" class="mainLabel tooltip" title="${groupTitle}">Fish group</label>
-                <g:select name="fishGroup" from="${fishGroups.display}" value="${criteria.fishGroup}" class="tooltip"
-                          keys="${fishGroups.keys}" noSelection="['':'All fishes']" title="${groupTitle}"/>
-                <div class="advanced top-pad" id="advancedTaxonSearch">
-                    <g:set var="ecosystemTitle" value="Restrict search to the selected ecosystem or choose ‘any’ to include all options."/>
-                    <label for="ecosystem" title="${ecosystemTitle}" class="tooltip">Primary ecosystem</label>
-                    <g:select name="ecosystem" from="['estuarine','coastal','demersal','pelagic']" class="tooltip"
-                              noSelection="['':'any']" style="margin-top:0;" title="${ecosystemTitle}"/><br/>
-                    <div id="family-widget" class="tooltip" title="Restrict the search to specified families. Type a few letters or select from pulldown menu. Select any number of families but ensure you click the + button after selecting each family to add it to the search list. Remove a family from a completed search by clicking the red X or click the ‘clear’ button below to remove all criteria.">
-                        <label for="family">Only these families</label>
-                        <g:select title="Type a few letters or pick from list." name="family" class="tooltip" from="${allFamilies}" noSelection="['':'']"/>
-                        <button type="button" id="addFamily">
-                            <img alt="add selected family" title="Add selected family to search criteria"
-                                 src="${resource(dir:'images/skin',file:'plus_icon.gif')}"/></button>
+            <g:if test="${grailsApplication.config.include.fish}">
+                <div class="search-block">
+                    <g:set var="bathomeTitle"
+                           value="Select broad depth category or use advanced search to set custom depth range."/>
+                    <label for="bathome" class="mainLabel tooltip2" title="${bathomeTitle}">Depth</label>
+                    <g:select name="bathome" class="tooltip2" from="${bathomeValues}" title="${bathomeTitle}"
+                              value="${criteria.bathome ?: 'coastal/shallow water (0-40m)'}"/>
+                    <div class="advanced top-pad tooltip2" id="advancedDepthSearch"
+                         title="Set custom depth range using the sliders or the value boxes.">
+                        <span>OR</span>
+                        <label style="padding-right: 5px;">Custom depth range (m)</label>
+                        Min: <g:textField name="minDepth" class="depthInput" value="${criteria.minDepth}"/>
+                        Max: <g:textField name="maxDepth" class="depthInput" value="${criteria.maxDepth}"/>
+                        <span id="plusMarker"></span>
+
+                        <div id="depthRangeSlider"></div>
                     </div>
-                    <div>
-                        <label for="endemic" class="advanced">
-                            Only include <abbr class="tooltip" title="Species is not found in any other areas">Endemic</abbr> species
-                        </label>
-                        <g:checkBox name="endemic" id="endemic" value="${params.endemic}"/>
-                    </div>
-                    <g:hiddenField name="families"/>
-                    <div><ul id="familyList"></ul></div>
                 </div>
 
-            </div>
+                <div class="search-block">
+                    <g:set var="groupTitle"
+                           value="Commonly recognisable fish ‘groupings’ are included. To search for a specific family or multiple families click on advanced search link above and select from ‘only these families’ pull-down menu, then click ‘+’ button."/>
+                    <label for="fishGroup" class="mainLabel tooltip2" title="${groupTitle}">Fish group</label>
+                    <g:select name="fishGroup" from="${fishGroups.display}" value="${criteria.fishGroup}"
+                              class="tooltip2"
+                              keys="${fishGroups.keys}" noSelection="['': 'All fishes']" title="${groupTitle}"/>
+                    <div class="advanced top-pad" id="advancedTaxonSearch">
+                        <g:set var="ecosystemTitle"
+                               value="Restrict search to the selected ecosystem or choose ‘any’ to include all options."/>
+                        <label for="ecosystem" title="${ecosystemTitle}" class="tooltip2">Primary ecosystem</label>
+                        <g:select name="ecosystem" from="['estuarine', 'coastal', 'demersal', 'pelagic']"
+                                  class="tooltip2"
+                                  noSelection="['': 'any']" style="margin-top:0;" title="${ecosystemTitle}"/><br/>
+
+                        <div id="family-widget" class="tooltip2"
+                             title="Restrict the search to specified families. Type a few letters or select from pulldown menu. Select any number of families but ensure you click the + button after selecting each family to add it to the search list. Remove a family from a completed search by clicking the red X or click the ‘clear’ button below to remove all criteria.">
+                            <label for="family">Only these families</label>
+                            <g:select title="Type a few letters or pick from list." name="family" class="tooltip2"
+                                      from="${allFamilies}" noSelection="['': '']"/>
+                            <button type="button" id="addFamily">
+                                <img alt="add selected family" title="Add selected family to search criteria"
+                                     src="${resource(dir: 'images/skin', file: 'plus_icon.gif')}"/></button>
+                        </div>
+
+                        <div>
+                            <label for="endemic" class="advanced">
+                                Only include <abbr class="tooltip2"
+                                                   title="Species is not found in any other areas">Endemic</abbr> species
+                            </label>
+                            <g:checkBox name="endemic" id="endemic" value="${params.endemic}"/>
+                        </div>
+                        <g:hiddenField name="families"/>
+                        <div><ul id="familyList"></ul></div>
+                    </div>
+
+                </div>
+            </g:if>
             <div class="search-block">
                 <g:set var="localityTitle" value="If area of interest is not listed, use map tools in advanced search to draw region of interest."/>
-                <label for="locality" class="mainLabel tooltip" title="${localityTitle}">Locality</label>
-                <select name="locality" id="locality" class="tooltip" title="${localityTitle}"><option value="">any</option></select>
-                <div class="top-pad tooltip" title="Choose the radius of the area around the selected locality. You can only adjust slider bar if a locality is selected.">
+                <label for="locality" class="mainLabel tooltip2" title="${localityTitle}">Locality</label>
+                <select name="locality" id="locality" class="tooltip2" title="${localityTitle}"><option
+                        value="">any</option></select>
+
+                <div class="top-pad tooltip2"
+                     title="Choose the radius of the area around the selected locality. You can only adjust slider bar if a locality is selected.">
                     <label for="radiusSlider">Distance from locality</label>
                     <div id="radiusSlider"></div><span id="radiusDisplay">50km</span>
                 </div>
                 <div class="advanced top-pad" id="advancedRegionSearch">
                     <span>OR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     <!-- Added by Alan on for fetching multiple layers on 30/07/2014 --- START -->
-                    <select name="myLayer" id="myLayer" class="tooltip" title="Select a layer">
+                    <select name="myLayer" id="myLayer" class="tooltip2" title="Select a layer">
                         <g:each in="${myLayer}" var="ix">
                             <option value="${ix.pid}" id="${ix.pid}" ${ix.name == criteria.imcra ? "selected='selected'" : ""}>${ix.name}</option>
                         </g:each>
@@ -92,7 +129,7 @@
                     <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <!-- Added by Alan Lin --- END -->
                     <g:set var="imcraTitle" value="Restrict your search to the following bioregion selected from the list or choose ‘any’ to include all areas. Bioregion will appear on map when selected."/>
-                    <select name="imcra" id="imcra" class="tooltip" title="${imcraTitle}">
+                    <select name="imcra" id="imcra" class="tooltip2" title="${imcraTitle}">
                         <option value="">any</option>
                         <g:each in="${imcras}" var="ix">
                             <option value="${ix.name}" id="${ix.pid}" ${ix.name == criteria.imcra ? "selected='selected'" : ""}>${ix.name}</option>
@@ -145,34 +182,34 @@
         <div id="map-wrap">
             <div id="map-canvas"></div>
         </div>%{--map-wrap--}%
-        <div id="intro-text">This tool searches ‘compiled distributions' for marine fishes inhabiting Australia’s
-    continental shelf and slope waters. These are maps of the areas where a species may be expected to be found
-    (rather than searching only collection or observation records which have false absences, and may contain
-    identifications that are out of date). The maps are developed by a person or persons with expert knowledge
-    of the group. Read more <g:link target="_maps" action="distributionModelling">here</g:link>.</div>
+        <div id="intro-text">${grailsApplication.config.include.introText} Read more <g:link target="_maps"
+                                                                                             action="distributionModelling">here</g:link>.</div>
         <div id="map-controls" style="display: none">
             <ul id="control-buttons">
-                <li class="active tooltip" id="pointer" title="Drag to move. Double click or use the zoom control to zoom.">
+                <li class="active tooltip2" id="pointer"
+                    title="Drag to move. Double click or use the zoom control to zoom.">
                     <img src="${resource(dir:'images/map',file:'pointer.png')}" alt="pointer"/>
                     Move & zoom
                 </li>
-                <li id="circle" class="tooltip" title="Click at centre and drag the desired radius. Values can be adjusted in the boxes.">
+                <li id="circle" class="tooltip2"
+                    title="Click at centre and drag the desired radius. Values can be adjusted in the boxes.">
                     <img src="${resource(dir:'images/map',file:'circle.png')}" alt="center and radius"/>
                     Draw circle
                 </li>
-                <li id="rectangle" class="tooltip" title="Click and drag a rectangle.">
+                <li id="rectangle" class="tooltip2" title="Click and drag a rectangle.">
                     <img src="${resource(dir:'images/map',file:'rectangle.png')}" alt="rectangle"/>
                     Draw rect
                 </li>
-                <li id="polygon" class="tooltip" title="Click any number of times to draw a polygon. Double click to close the polygon.">
+                <li id="polygon" class="tooltip2"
+                    title="Click any number of times to draw a polygon. Double click to close the polygon.">
                     <img src="${resource(dir:'images/map',file:'polygon.png')}" alt="polygon"/>
                     Draw polygon
                 </li>
-                <li id="clear" class="tooltip" title="Clear the region from the map.">
+                <li id="clear" class="tooltip2" title="Clear the region from the map.">
                     <img src="${resource(dir:'images/map',file:'clear.png')}" alt="clear"/>
                     Clear
                 </li>
-                <li id="reset" class="tooltip" title="Zoom and centre on Australia.">
+                <li id="reset" class="tooltip2" title="Zoom and centre on Australia.">
                     <img src="${resource(dir:'images/map',file:'reset.png')}" alt="reset map"/>
                     Reset
                 </li>
@@ -216,9 +253,7 @@
         Press the + button next to the family selector to add it to the search criteria.
     </p>
 </div>
-
 <script>
-
     var serverUrl = "${grailsApplication.config.grails.serverURL}";
 
     $(document).ready( function () {
@@ -267,7 +302,11 @@
 
         // wire search button
         $('#searchButton').click( function () {
-            search();
+            if (${grailsApplication.config.include.fish}) {
+                search();
+            } else {
+                search(true);
+            }
         });
 
         // wire clear button
@@ -376,7 +415,7 @@
                                 if ($lat.length === 0) {
                                     // doesn't so create it
                                     $lat = $('<li><input type="text" id="lat' + i +
-                                            '"/><input type="text" id="lon' + i + '"/></li>')
+                                    '"/><input type="text" id="lon' + i + '"/></li>')
                                             .appendTo($ul);
                                 }
                                 $('#lat' + i).val(round(path.getAt(i).lat()));
@@ -442,7 +481,6 @@
         if (arr[1].lat() != arr[2].lat()) { return false; }
         return true
     }
-
 </script>
 </body>
 </html>

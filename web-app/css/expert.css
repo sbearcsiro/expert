@@ -445,6 +445,15 @@ button {
     /*margin: 20px 20px 0 20px;*/
 }
 
+/* fix map controls with bootstrap */
+#map-canvas img {
+    max-width: none;
+}
+
+.inner {
+    width: 980px;
+}
+
 #map-canvas{
     position: relative;
     width: 600px;
@@ -547,4 +556,18 @@ body.attribution p {
 
 abbr, acronym {
     border-bottom: .1em dotted;
+}
+
+#drawnArea label {
+    font-size: 11px;
+}
+
+#drawnArea input {
+    font-size: 11px;
+    height: 15px;
+    width: 130px;
+}
+
+#map-controls li {
+    font-size: 12px;
 }

@@ -67,42 +67,61 @@ class SearchService {
 
         log.debug "Query = " + query
 
-        def servicePath = '/ws/distributions'
+        def servicePath = '/distributions'
         if (cmd.locationBasedOn == 'circle' || cmd.locationBasedOn == 'locality') {
             servicePath += '/radius'
         }
 
         try {
-            withHttp(uri: grailsApplication.config.spatial.baseURL) {
+            def map = [:]
+            withHttp(uri: grailsApplication.config.layers.service.baseURL) {
                 def json = post(path: servicePath, body: query)
                 //println json
                 json.each {
-                    results <<
-                            [name: it.scientific,
-                             common: it.common_nam,
-                             caabCode: it.caab_species_number,
-                             guid: it.lsid,
-                             spcode: it.spcode,
-                             family: it.family,
-                             familyGuid: it.family_lsid,
-                             familyCaabCode: it.caab_family_number,
-                             genus: it.genus_name,
-                             genusGuid: it.genus_lsid,
-                             specific: it.specific_n,
-                             group: it.group_name,
-                             gidx: it.geom_idx,
-                             authority: it.authority_,
-                             imageQuality: it.image_quality,
-                             wmsurl: it.wmsurl,
-                             minDepth: it.min_depth,
-                             maxDepth: it.max_depth,
-                             endemic: it.endemic,
-                             primaryEcosystem: (it.pelagic_fl > 0 ? "p" : "") +
-                                     (it.coastal_fl ? "c" : "") +
-                                     (it.estuarine_fl ? "e" : "") +
-                                     (it.desmersal_fl ? "d" : "")
-                            ]
+                    //group by scientific name
+                    def list = map.get(it.scientific)
+                    if (list == null) {
+                        list = []
+                    }
+                    list << it
+                    map.put(it.scientific, list)
                 }
+            }
+            //translate grouped records into a list
+            //list will use first available non-grouped value when available
+            map.each { k, it ->
+                results << [
+                        name            : first(it.collect { v -> v.scientific }),
+                        common          : first(it.collect { v -> v.common_nam }),
+                        caabCode        : first(it.collect { v -> v.caab_species_number }),
+                        guid            : first(it.collect { v -> v.lsid }),
+                        family          : first(it.collect { v -> v.family }),
+                        familyGuid      : first(it.collect { v -> v.family_lsid }),
+                        familyCaabCode  : first(it.collect { v -> v.caab_family_number }),
+                        genus           : first(it.collect { v -> v.genus_name }),
+                        genusGuid       : first(it.collect { v -> v.genus_lsid }),
+                        specific        : first(it.collect { v -> v.specific_n }),
+                        group           : first(it.collect { v -> v.group_name }),
+                        primaryEcosystem: (first(it.collect { v -> v.pelagic_fl }) > 0 ? "p" : "") +
+                                (first(it.collect { v -> v.coastal_fl }) ? "c" : "") +
+                                (first(it.collect { v -> v.estuarine_fl }) ? "e" : "") +
+                                (first(it.collect { v -> v.desmersal_fl }) ? "d" : ""),
+
+                        areas           : it.collect { v ->
+                            [areaName    : v.area_name,
+                             metadataUrl : v.metadata_u,
+                             spcode      : v.spcode,
+                             gidx        : v.geom_idx,
+                             authority   : v.authority_,
+                             imageQuality: v.image_quality,
+                             wmsurl      : v.wmsurl,
+                             minDepth    : v.min_depth,
+                             maxDepth    : v.max_depth,
+                             endemic     : v.endemic
+                            ]
+                        }
+
+                ]
             }
         } catch (Exception e) {
             return [error: "Spatial search: " + e.message, results: [], query: query]
@@ -111,6 +130,17 @@ class SearchService {
         log.info "results = ${results}"
 
         return [results: results, query: query/*, error: "spatial webservice not available"*/]
+    }
+
+    def first(list) {
+        def value = null
+        list.each { v ->
+            if (value == null && v != null && !String.valueOf(v).isEmpty() && !String.valueOf(v).equalsIgnoreCase("null")) {
+                value = v
+            }
+        }
+
+        value
     }
 
     def speciesListSummary(List species) {

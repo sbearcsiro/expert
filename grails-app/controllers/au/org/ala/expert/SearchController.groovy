@@ -1,10 +1,8 @@
 package au.org.ala.expert
 
-import groovyx.net.http.HTTPBuilder
-import groovyx.net.http.ContentType
 import grails.converters.JSON
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import grails.util.GrailsUtil
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
 class SearchController {
 
@@ -15,15 +13,6 @@ class SearchController {
             [bathomeValues: metadataService.bathomeValues, imcras: metadataService.getMarineRegions(), myLayer: metadataService.getMyLayerRegions(),
              localities: metadataService.localitiesByState, allFamilies: metadataService.getAllFamilies(),
              fishGroups: metadataService.getFishGroups(), criteria: new SearchCommand()]
-        
-        /*if (params.key) {
-            model.key = params.key
-            def res = resultsService.getResults(params.key)
-            if (!res.error) {
-                model.summary = [total: res.list.total, familyCount: res.list.familyCount]
-                println "summary = ${model.summary}"
-            }
-        }*/
 
         if (params.debugModel == 'true') {
             model.criteria = null
@@ -66,7 +55,7 @@ class SearchController {
 
         // register the results with the results service
         def error = ""
-        def key = submitResults(list, cmd.queryDescription, "")
+        def key = submitResults(list, cmd.queryDescription)
         if (key == null) {
             error = "Failed to save search results."
         }
@@ -150,7 +139,7 @@ class SearchController {
             // register the results with the results service
             def storeError = ""
             if (!searchResults.error) {
-                key = submitResults(searchResults, cmd.queryDescription, "")
+                key = submitResults(searchResults, cmd.queryDescription)
                 if (key == null) {
                     storeError = "Failed to save search results."
                 }
@@ -233,59 +222,18 @@ class SearchController {
         model
     }
 
-    String submitResults(list, queryDescription, key) {
+    String submitResults(list, queryDescription) {
         println grailsApplication.config.results.cache.baseUrl
 
-        def http = new HTTPBuilder(grailsApplication.config.results.cache.baseUrl + '/')
-        http.request( groovyx.net.http.Method.POST, groovyx.net.http.ContentType.JSON) {
-            //Modified by Alan on for fetching multiple layers on 30/07/2014 --- START
+        def data = [list: list, queryDescription: queryDescription, time: new Date()]
+        def key = data.encodeAsMD5()
+        resultsCacheService.put(key, data)
 
-            /*
-            uri.path = 'submit'
-
-            def bodyMap = [ list: list, queryDescription: queryDescription, query: list.query]
-
-            if (key) {bodyMap.key = key}
-
-            def formDataStr = bodyMap as JSON
-
-            def stream = new ByteArrayOutputStream()
-            stream.write( formDataStr.toString().getBytes("UTF-8"))
-
-            body = stream
-            requestContentType = ContentType.URLENC
-            */
-            //Modified by Alan --- END
-
-            uri.path = 'submit'
-            body = [ list: list, queryDescription: queryDescription, query: list.query]
-            if (key) {body.key = key}
-            requestContentType = ContentType.URLENC
-
-            response.success = { resp, json ->
-                return json.key
-            }
-
-            response.failure = { resp ->
-                log.debug "Unexpected error: ${resp.statusLine.statusCode} : ${resp.statusLine.reasonPhrase}"
-                return null
-            }
-        }
+        key
     }
 
     def allFamilies = {
         render metadataService.getAllFamilies() as JSON
-    }
-
-    def debugSearch() {
-
-        SearchCommand cmd = new SearchCommand()
-        cmd.maxDepth = 40
-        
-        // do the search
-        def results = searchService.search(cmd)
-        
-        render results as JSON
     }
 
     def reloadConfig = {

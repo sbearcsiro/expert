@@ -3,7 +3,6 @@
  * User: markew
  * Date: 13/01/12
  * Time: 10:59 AM
- * To change this template use File | Settings | File Templates.
  */
 function buildUrl() {
     var params = $.deparam.querystring(true),
@@ -23,21 +22,33 @@ function buildUrl() {
     else {
         params.pageSize = pageSize;
     }
-    if (sortBy === 'name') {
-        delete params.sortBy;
-    }
-    else {
-        params.sortBy = sortBy;
-    }
+    params.sortBy = sortBy;
+
     url = $.param.querystring("", params);
-    if ($.bbq.getState('showGenera') === 'true') {
-        url = $.param.fragment(url, 'showGenera=true');
-    }
     return url;
 }
 var tviewer = {
-    init: function () {
-        var params = $.deparam.querystring(true);
+    serverUrl: null,
+    init: function (serverUrl) {
+        this.serverUrl = serverUrl;
+
+        var that = this,
+            params = $.deparam.querystring(true),
+            colorboxOptions = {
+                opacity: 0.5,
+                inline: true,
+                onLoad: function () {
+                    var $popup = $(this.hash),
+                        mdUrl = $popup.find('div.details').data('mdurl');
+
+                    if (mdUrl) {
+                        // add 'loading..' status
+                        $popup.find('dd').html('loading..');
+                        // load and inject metadata
+                        that.injectImageMetadata(mdUrl, this);
+                    }
+                }
+            };
 
         // set search controls based on url params - !this must be done before binding events
         if (params.pageSize !== undefined) {
@@ -50,12 +61,12 @@ var tviewer = {
             $('#sortOrder').val(params.sortOrder);
         }
 
-        // select all checkboxes
+        // wire selection of all checkboxes
         $('#selectAll').click(function () {
             $('input[type="checkbox"]').attr('checked','checked');
         });
 
-        // clear all checkboxes
+        // wire clearing of all checkboxes
         $('#clearAll').click(function () {
             $('input[type="checkbox"]').removeAttr('checked');
         });
@@ -66,16 +77,46 @@ var tviewer = {
         });
 
         // wire lightbox for images
-        $('div.imageContainer').colorbox({
-            rel: 'list',
-            opacity: 0.5,
-            html: function () {
-                var content = $(this).find('div').clone(false);
-                // need to clear max-width and max-height explicitly (seems to get written into element style somehow - cloning?)
-                $(content).find('img').removeClass('list').removeAttr('title').css('max-width','none').css('max-height','none'); // remove max size constraints & title
-                $(content).find('details').css('display','block'); // show details
-                return content;
+        $('.lightbox').colorbox(colorboxOptions);
+
+        // change main image on mouseover of genera images
+        $('img.thumb').on('mouseenter', function () {
+            var $mainImageTd = $(this).closest('table.genera').parent().prev(),
+                $genusTd = $(this).parent().parent(),
+                $mainImageLink = $mainImageTd.find('a.imageContainer'),
+                $mainImage = $mainImageLink.find('img'),
+                $popupContent = $mainImageTd.find('div.popupContent'),
+                $popImage = $popupContent.find('img'),
+                newImageSrc = $(this).attr('src'),
+                mdUrl = $genusTd.find('div.details').data('mdurl');
+
+            // handle case where the initial image is 'no image available'
+            if ($mainImageLink.hasClass('no-image')) {
+                // remove 'no-image'
+                $mainImageLink.removeClass('no-image');
+                // make sure the image is included in the colorbox group
+                $mainImageLink.addClass('lightbox');
+                $mainImageLink.attr('rel', 'list');
+                $mainImageLink.colorbox(colorboxOptions);
             }
+
+            // change the image src
+            $mainImage.attr('src', newImageSrc);
+            // change the popup img
+            $popImage.attr('src', newImageSrc);
+            // change the metadata url
+            $popupContent.find('div.details').data('mdurl', mdUrl);
+            that.injectImageMetadata(mdUrl, $(this).parent());
+        });
+    },
+    // asynchronous loading of image metadata
+    injectImageMetadata: function (mdUrl, box) {
+        $.getJSON(this.serverUrl + "/taxon/imageMetadataLookup", {url: mdUrl}, function (data) {
+            $(box.hash).find('.creator').html(data["http://purl.org/dc/elements/1.1/creator"]);
+            $(box.hash).find('.license').html(data["http://purl.org/dc/elements/1.1/license"]);
+            $(box.hash).find('.rights').html(data["http://purl.org/dc/elements/1.1/rights"]);
+            $(box).colorbox.resize();
         });
     }
-}
+};
+

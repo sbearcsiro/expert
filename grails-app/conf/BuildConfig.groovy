@@ -2,8 +2,8 @@ grails.servlet.version = "2.5" // Change depending on target container complianc
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
+grails.project.target.level = 1.7
+grails.project.source.level = 1.7
 grails.project.war.file = "target/${appName}-${appVersion}.war"
 grails.project.groupId = "au.org.ala"
 
@@ -25,19 +25,14 @@ grails.project.dependency.resolution = {
 
     dependencies {
         runtime 'net.sf.opencsv:opencsv:2.1'
-        compile group: 'au.org.ala',
-                name: 'ala-cas-client',
-                version:'2.1-SNAPSHOT',
-                transitive:false
-        compile 'org.jasig.cas.client:cas-client-core:3.1.12'
     }
 
     plugins {
         build ":tomcat:7.0.54"
         build  ":release:3.0.1"
-        runtime ":resources:1.2.8"
         runtime ":rest:0.8"
         compile ':cache:1.1.1'
         compile ":cache-ehcache:1.0.0"
+        runtime ":ala-bootstrap2:2.1"
     }
 }
