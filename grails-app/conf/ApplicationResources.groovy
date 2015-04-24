@@ -24,9 +24,9 @@ modules = {
     }
 
     jqueryui {
-        resource url: 'js/jquery.colorbox-min.js'
-        resource url: 'js/jquery.ba-bbq.min.js'
         resource url: 'js/jquery-ui-1.11.1.min.js'
+        resource url: 'js/jquery.ba-bbq.min.js'
+        resource url: 'js/jquery.colorbox-min.js'
     }
 
     tooltipster {

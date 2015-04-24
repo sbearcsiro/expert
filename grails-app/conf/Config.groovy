@@ -100,6 +100,7 @@ include.fish = false
 include.area.name = true
 include.appName = 'Species of National Environmental Significance'
 include.introText = 'This tool searches Species of National Environmental Significance.'
+include.modelInfo.url = 'http://www.environment.gov.au/science/erin/databases-maps/snes'
 
 /******************************************************************************\
  *  SECURITY

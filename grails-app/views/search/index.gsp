@@ -16,13 +16,13 @@
 <body class="search">
 <header id="page-header">
     <div class="inner">
-        <g:if test="${grailsApplication.config.include.fish}">
+        <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
             <hgroup>
-                <h1 title="fishmap - find Australian marine fishes"></h1>
+                <h1 title="Fishmap - find Australian marine fishes"></h1>
             </hgroup>
         </g:if>
 
-        <g:if test="${!grailsApplication.config.include.fish}">
+        <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
             <br/>
 
             <h1 title="${grailsApplication.config.include.appName} - Visual explorer - species list">${grailsApplication.config.include.appName} - Visual explorer - species list</h1>
@@ -34,10 +34,10 @@
 <div class="inner">
     <section id="search">
         <p class="searchInstructions">
-            <g:if test="${grailsApplication.config.include.fish}">
+            <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
                 Select depth, fish group and location
             </g:if>
-            <g:if test="${!grailsApplication.config.include.fish}">
+            <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
                 Select location
             </g:if>
             and press the 'Search' button below or
@@ -46,7 +46,7 @@
             <span id="advWarning"><r:img uri="/images/skin/warning.png" style="padding-right:4px;"/>Some advanced criteria are hidden.</span>
         </p>
         <g:form action="search" class="searchGroup">
-            <g:if test="${grailsApplication.config.include.fish}">
+            <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
                 <div class="search-block">
                     <g:set var="bathomeTitle"
                            value="Select broad depth category or use advanced search to set custom depth range."/>
@@ -182,8 +182,15 @@
         <div id="map-wrap">
             <div id="map-canvas"></div>
         </div>%{--map-wrap--}%
-        <div id="intro-text">${grailsApplication.config.include.introText} Read more <g:link target="_maps"
-                                                                                             action="distributionModelling">here</g:link>.</div>
+        <div id="intro-text">${grailsApplication.config.include.introText}
+            Read more
+            <g:if test="${!grailsApplication.config.include.modelInfo.url == null}">
+                <g:link target="_maps" action="distributionModelling">here</g:link>
+            </g:if>
+            <g:if test="${grailsApplication.config.include.modelInfo.url != null}">
+                <a target="_maps" href="${grailsApplication.config.include.modelInfo.url}">here</a>
+            </g:if>
+            .</div>
         <div id="map-controls" style="display: none">
             <ul id="control-buttons">
                 <li class="active tooltip2" id="pointer"
@@ -302,7 +309,7 @@
 
         // wire search button
         $('#searchButton').click( function () {
-            if (${grailsApplication.config.include.fish}) {
+            if (${grailsApplication.config.include.fish.toBoolean()}) {
                 search();
             } else {
                 search(true);

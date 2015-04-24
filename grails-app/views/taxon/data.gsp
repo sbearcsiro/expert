@@ -9,13 +9,13 @@
 <body class="species-data">
 <header id="page-header">
     <div class="inner no-top">
-        <g:if test="${grailsApplication.config.include.fish}">
+        <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
             <hgroup>
                 <h1 title="fishmap - find Australian marine fishes"></h1>
             </hgroup>
         </g:if>
 
-        <g:if test="${!grailsApplication.config.include.fish}">
+        <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
             <br/>
 
             <h1 title="${grailsApplication.config.include.appName} - Data explorer - species data">${grailsApplication.config.include.appName} - Data explorer - species data</h1>
@@ -32,13 +32,13 @@
     <h2 style="float:left;">Results for ${queryDescription ?: 'Australia'}</h2>
 
     <div id="controls">
-        <g:if test="${grailsApplication.config.include.fish}">
+        <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
             <label for="sortBy">Sort by:</label>
             <g:select
                     from="[[text: 'Family/genus/spp', id: 'taxa'], [text: 'Scientific name', id: 'name'], [text: 'Common name', id: 'common'], [text: 'CAAB code', id: 'caabCode']]"
                     name="sortBy" optionKey="id" optionValue="text"/>
         </g:if>
-        <g:if test="${!grailsApplication.config.include.fish}">
+        <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
             <label for="sortBy">Sort by:</label>
             <g:select
                     from="[[text: 'Family/genus/spp', id: 'taxa'], [text: 'Scientific name', id: 'name'], [text: 'Common name', id: 'common']]"
@@ -49,14 +49,14 @@
     </div>
     <table class="taxonData">
         <colgroup>
-            <g:if test="${grailsApplication.config.include.fish}">
+            <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
                 <col id="tdCaabCode">
                 <col id="tdFamily">
                 <col id="tdSciName">
                 <col id="tdCommon">
                 <col id="tdGroup">
             </g:if>
-            <g:if test="${!grailsApplication.config.include.fish}">
+            <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
                 <col id="tdFamily">
                 <col id="tdSciName">
                 <col id="tdCommon">
@@ -65,7 +65,7 @@
         </colgroup>
         <thead>
         <tr>
-            <g:if test="${grailsApplication.config.include.fish}">
+            <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
                 <th>CAAB Code</th>
                 <th>Family</th>
                 <th>Scientific name</th>
@@ -75,7 +75,7 @@
                 <th>Max depth</th>
                 <th>Primary ecosystem</th>
             </g:if>
-            <g:if test="${!grailsApplication.config.include.fish}">
+            <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
                 <th>Family</th>
                 <th>Scientific name</th>
                 <th>Common name</th>
@@ -84,9 +84,9 @@
         </thead>
         <tbody>
         <g:each in="${list}" var="it">
-            <g:each in="${i.areas}" var="i">
+            <g:each in="${it.areas}" var="i">
                 <tr>
-                    <g:if test="${grailsApplication.config.include.fish}">
+                    <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
                         <!-- caab -->
                         <td>${it.caabCode}</td>
                         <!-- family -->
@@ -105,7 +105,7 @@
                         <!-- ecosystem -->
                         <td><tv:displayPrimaryEcosystem codes="${it.primaryEcosystem}"/></td>
                     </g:if>
-                    <g:if test="${!grailsApplication.config.include.fish}">
+                    <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
                         <!-- family -->
                         <td>${it.family}</td>
                         <!-- name -->

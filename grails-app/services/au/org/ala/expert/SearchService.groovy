@@ -74,8 +74,8 @@ class SearchService {
 
         try {
             def map = [:]
-            withHttp(uri: grailsApplication.config.layers.service.baseURL) {
-                def json = post(path: servicePath, body: query)
+            withHttp(uri: grailsApplication.config.spatial.layers.service.url + servicePath) {
+                def json = post(body: query)
                 //println json
                 json.each {
                     //group by scientific name
@@ -124,6 +124,7 @@ class SearchService {
                 ]
             }
         } catch (Exception e) {
+            log.error("search failed for query: " + query, e)
             return [error: "Spatial search: " + e.message, results: [], query: query]
         }
 

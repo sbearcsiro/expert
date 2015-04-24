@@ -12,13 +12,13 @@
 <body class="family-list">
 <header id="page-header">
     <div class="inner no-top">
-        <g:if test="${grailsApplication.config.include.fish}">
+        <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
             <hgroup>
                 <h1 title="fishmap - find Australian marine fishes"></h1>
             </hgroup>
         </g:if>
 
-        <g:if test="${!grailsApplication.config.include.fish}">
+        <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
             <br/>
 
             <h1 title="${grailsApplication.config.include.appName} - Visual explorer - ${rank} list">${grailsApplication.config.include.appName} - Visual explorer - ${rank} list</h1>
@@ -37,13 +37,13 @@
     <span style="color: grey">Click images to view full size.</span>
 
     <div id="controls">
-        <g:if test="${grailsApplication.config.include.fish}">
+        <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
             <label for="sortBy">Sort by:</label>
             <g:select
                     from="[[text: 'Scientific name', id: 'name'], [text: 'Common name', id: 'common'], [text: 'CAAB code', id: 'caabCode']]"
                     name="sortBy" optionKey="id" optionValue="text"/>
         </g:if>
-        <g:if test="${!grailsApplication.config.include.fish}">
+        <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
             <label for="sortBy">Sort by:</label>
             <g:select from="[[text: 'Scientific name', id: 'name'], [text: 'Common name', id: 'common']]"
                       name="sortBy" optionKey="id" optionValue="text"/>
@@ -65,7 +65,7 @@
             <thead>
             <tr><th></th><th>Family name<br/><span style="font-weight: normal;">Common name<br/>
 
-                <g:if test="${grailsApplication.config.include.fish}">
+                <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
                     CAAB code
                     <a href="http://www.marine.csiro.au/caab/" class="external">more info</a>
                 </g:if>

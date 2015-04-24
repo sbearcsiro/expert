@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
     <title>Species view | ${grailsApplication.config.include.appName} | Atlas of Living Australia</title>
@@ -11,13 +11,13 @@
 <body class="species-list">
 <header id="page-header">
     <div class="inner no-top">
-        <g:if test="${grailsApplication.config.include.fish}">
+        <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
             <hgroup>
                 <h1 title="fishmap - Visual explorer - species list"></h1>
             </hgroup>
         </g:if>
 
-        <g:if test="${!grailsApplication.config.include.fish}">
+        <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
             <br/>
 
             <h1 title="${grailsApplication.config.include.appName} - Visual explorer - species list">${grailsApplication.config.include.appName} - Visual explorer - species list</h1>
@@ -35,13 +35,13 @@
 <div class="inner no-top">
     <span style="color: grey">Click images to view full size.</span>
     <div id="controls">
-        <g:if test="${grailsApplication.config.include.fish}">
+        <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
             <label for="sortBy">Sort by:</label>
             <g:select
                     from="[[text: 'Scientific name', id: 'name'], [text: 'Common name', id: 'common'], [text: 'Family/genus/spp', id: 'taxa'], [text: 'CAAB code', id: 'caabCode']]"
                     name="sortBy" optionKey="id" optionValue="text" value="taxa"/>
         </g:if>
-        <g:if test="${!grailsApplication.config.include.fish}">
+        <g:if test="${!grailsApplication.config.include.fish.toBoolean()}">
             <label for="sortBy">Sort by:</label>
             <g:select
                     from="[[text: 'Scientific name', id: 'name'], [text: 'Common name', id: 'common'], [text: 'Family/genus/spp', id: 'taxa']]"
@@ -62,7 +62,7 @@
         <thead>
         <tr><th></th><th>Scientific name<br/><span style="font-weight: normal;">Common name<br/>Family<br/>
 
-            <g:if test="${grailsApplication.config.include.fish}">
+            <g:if test="${grailsApplication.config.include.fish.toBoolean()}">
                 CAAB code
                 <a href="http://www.marine.csiro.au/caab/" class="external">more info</a></span>
             </g:if>
@@ -70,8 +70,13 @@
         </th>
             <th style="text-align:center;vertical-align:middle;">Representative image</th>
             <th style="padding-left:60px;">Distribution<br>
-                <a target="_maps"
-                   href="${grailsApplication.config.distribution.search.baseUrl}/distributionModelling">About maps</a>
+                <g:if test="${!grailsApplication.config.include.modelInfo.url == null}">
+                    <a target="_maps"
+                       href="${grailsApplication.config.distribution.search.baseUrl}/distributionModelling">About maps</a>
+                </g:if>
+                <g:if test="${grailsApplication.config.include.modelInfo.url != null}">
+                    <a target="_maps" href="${grailsApplication.config.include.modelInfo.url}">About maps</a>
+                </g:if>
             </th>
         </tr>
         </thead>
@@ -128,7 +133,7 @@
                         </div>
                     </g:if>
                     <g:else>
-                        <a class="imageContainer no-image" href="#${i.name}-popup">
+                        <a class="imageContainer no-image" href="#${i.name.replace(' ', '_')}-popup">
                             <r:img class="list" uri="/images/no-image.png"/>
                         </a>
                     </g:else>
@@ -141,7 +146,7 @@
                                 <img class="dist"
                                      src="${grailsApplication.config.grails.serverURL}/distribution/show/${it.gidx}"
                                      alt title="Click for larger view"/>
-                                <g:if test="${grailsApplication.config.include.area.name}">
+                                <g:if test="${grailsApplication.config.include.area.name.toBoolean()}">
                                     ${it.areaName}
                                 </g:if>
                             </div>
@@ -151,14 +156,21 @@
                             <div class="popupContent distribution-popup" id="${it.gidx}-dist">
                                 <img src="${grailsApplication.config.grails.serverURL}/distribution/show/${it.gidx}"
                                      alt/><br>
-                                <a target="_maps"
-                                   href="${grailsApplication.config.distribution.search.baseUrl}/distributionModelling">About the map</a><br>
+                                <g:if test="${!grailsApplication.config.include.modelInfo.url == null}">
+                                    <a target="_maps"
+                                       href="${grailsApplication.config.distribution.search.baseUrl}/distributionModelling">About the map</a>
+                                </g:if>
+                                <g:if test="${grailsApplication.config.include.modelInfo.url != null}">
+                                    <a target="_maps"
+                                       href="${grailsApplication.config.include.modelInfo.url}">About the map</a>
+                                </g:if>
+                                <br>
 
                                 <div class="details">
-                                    <g:if test="${grailsApplication.config.include.area.name}">
+                                    <g:if test="${grailsApplication.config.include.area.name.toBoolean()}">
                                         <div class="summary">${it.areaName}</div>
                                     </g:if>
-                                    <g:if test="${!grailsApplication.config.include.area.name}">
+                                    <g:if test="${!grailsApplication.config.include.area.name.toBoolean()}">
                                         <div class="summary" id="${it.gidx}-distsummary"><strong><em>${i.name}</em>
                                         </strong></div>
                                     </g:if>
