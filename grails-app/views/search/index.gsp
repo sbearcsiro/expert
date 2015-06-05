@@ -28,7 +28,11 @@
             <h1 title="${grailsApplication.config.include.appName} - Visual explorer - species list">${grailsApplication.config.include.appName} - Visual explorer - species list</h1>
             <br/>
         </g:if>
-        <nav id="breadcrumb"><ol><li class="last">Search</li></ol></nav>
+        <nav id="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="active">Search</li>
+            </ol>
+        </nav>
     </div>
 </header>
 <div class="inner">

@@ -359,12 +359,14 @@ function showWktForObject(pid) {
 function showRegionForObject(pid) {
     $.get(config.baseUrl + "/search/getMyLayer", {pid: pid}, function (data) {
         if(data.length > 0) {
-            $('#imcra').find('option').remove().end().append('<option value="any">any</option>').val('any');
+            var imcra = $('#imcra');
+            imcra.find('option').remove().end().append('<option value="any">any</option>').val('any');
 
             for(var i=0; i<data.length; i++) {
                 var regions = data[i];
                 $("#imcra").append("<option value=\"" + data[i].name + "\" id=\"" + data[i].pid + "\">" + data[i].name + "</option>");
             }
+            imcra.trigger('optionsloaded', {});
         }
     });
 }

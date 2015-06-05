@@ -75,6 +75,10 @@ if (!spatial.layers.service.url) {
     spatial.layers.service.url = spatial.baseURL + "/layers-service"
 }
 
+if (!distribution.search.baseUrl) {
+    distribution.search.baseUrl = '/search'
+}
+
 /******************************************************************************\
  *  APP CONFIG
  \******************************************************************************/

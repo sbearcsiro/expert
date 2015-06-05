@@ -276,7 +276,7 @@ span.or {
 }
 
 #clearButton {
-    background: white none;
+    background: transparent;
     color: #007c84;
     padding: 1px 6px;
     border: none;
@@ -344,22 +344,22 @@ input.depthInput {
     padding: 8px;
 
     /* IE10 Consumer Preview */
-    background-image: -ms-linear-gradient(right, #FFFFFF 0%, #A7D4D6 100%);
+    background-image: -ms-linear-gradient(right, rgba(238,238,238,0) 0%, #A7D4D6 100%);
 
     /* Mozilla Firefox */
-    background-image: -moz-linear-gradient(right, #FFFFFF 0%, #A7D4D6 100%);
+    background-image: -moz-linear-gradient(right, rgba(238,238,238,0) 0%, #A7D4D6 100%);
 
     /* Opera */
-    background-image: -o-linear-gradient(right, #FFFFFF 0%, #A7D4D6 100%);
+    background-image: -o-linear-gradient(right, rgba(238,238,238,0) 0%, #A7D4D6 100%);
 
     /* Webkit (Safari/Chrome 10) */
-    background-image: -webkit-gradient(linear, right top, left top, color-stop(0, #FFFFFF), color-stop(1, #A7D4D6));
+    background-image: -webkit-gradient(linear, right top, left top, color-stop(0, rgba(238,238,238,0)), color-stop(1, #A7D4D6));
 
     /* Webkit (Chrome 11+) */
-    background-image: -webkit-linear-gradient(right, #FFFFFF 0%, #A7D4D6 100%);
+    background-image: -webkit-linear-gradient(right, rgba(238,238,238,0) 0%, #A7D4D6 100%);
 
     /* W3C Markup, IE10 Release Preview */
-    background-image: linear-gradient(to left, #FFFFFF 0%, #A7D4D6 100%);
+    background-image: linear-gradient(to left, rgba(238,238,238,0) 0%, #A7D4D6 100%);
 
     /*background: linear-gradient(left , rgb(167,212,214) 0%, rgb(255,255,255) 100%);
     background: -o-linear-gradient(left , rgb(167,212,214) 0%, rgb(255,255,255) 100%);
@@ -570,4 +570,20 @@ abbr, acronym {
 
 #map-controls li {
     font-size: 12px;
+}
+
+html {
+    background: url(images/obp.jpg) no-repeat center center;
+}
+
+body.search {
+    background-color: transparent;
+}
+
+body.search div#main.container {
+    background-color: rgba(238,238,238,0.9);
+    border-radius: 5px;
+    padding: 4px;
+    border: grey solid 1px;
+    box-shadow: 0px 6px 30px black;
 }

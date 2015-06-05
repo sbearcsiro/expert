@@ -36,7 +36,7 @@ class WebService {
             log.error(error.error,e)
             return error
         } catch (SocketTimeoutException e) {
-            def error = [error: "Timed out getting json. URL= \${url}."]
+            def error = [error: "Timed out getting json. URL= ${url}."]
             log.error(error.error,e)
             return error
         } catch (Exception e) {

@@ -96,7 +96,7 @@ table.taxonList td.mainImage {
 
 img.list {
     max-width: 285px;
-    /*max-height: 150px;*/
+    /*max-height: 300px;*/
 }
 
 img.dist {
@@ -323,4 +323,25 @@ li.currentPage {
 
 #checkboxButtons {
     margin-left: 190px;
+}
+
+.family-list #main td.mainImage a {
+    display: block;
+    height: 0;
+    position: relative;
+    width: 100%;
+    padding: 56.25% 0 0 0;
+    overflow: hidden;
+}
+
+.family-list #main td.mainImage a img.list {
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    display: block;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
 }

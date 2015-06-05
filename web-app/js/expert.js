@@ -482,7 +482,7 @@ function search(headless) {
         // emphasise it
         $('#searchResults').animate({borderColor: '#DF4A21'/*'#f2bd99'*//*'#ff7154'*/,
             backgroundColor: '#f2bd99',color:'#DF4A21'}, 1000, function () {
-            $('#searchResults').animate({borderColor: '#ccc', backgroundColor: 'white',
+            $('#searchResults').animate({borderColor: '#ccc', backgroundColor: 'transparent',
                 color: '#333A3F'}, 1000);
         });
     });
@@ -567,11 +567,19 @@ function setPageValues() {
         // depth range
         customDepth.setFromQuery(queryParams.min_depth, queryParams.max_depth);
 
-        // imcra
-        if (queryParams.objectName) {
-            //console.log(queryParams);
-            $('#imcra').val(queryParams.objectName);
-            locationWidgets.imcraChange();
+        if (queryParams.fid) {
+            var myLayer = $('#myLayer');
+            myLayer.find('option#'+queryParams.fid).prop('selected', true);
+            myLayer.trigger('change');
+            $('#imcra').one('optionsloaded', function(e) {
+                // imcra
+                if (queryParams.objectName) {
+                    //console.log(queryParams);
+                    $('#imcra').val(queryParams.objectName);
+                    locationWidgets.imcraChange();
+                }
+
+            });
         }
 
         // ecosystem

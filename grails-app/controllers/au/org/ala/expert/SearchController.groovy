@@ -181,11 +181,25 @@ class SearchController {
         if (params.pid) {
             response.setHeader("Access-Control-Allow-Origin", "*");
 
-            if(params.pid.equals("cl21")) {
-                render metadataService.getMarineRegions() as JSON;
-            } else if(params.pid.equals("cl1051")) {
-                render metadataService.getCapad2014Regions() as JSON;
+            def regions
+            switch(params.pid) {
+                case "cl21":
+                    regions = metadataService.getMarineRegions()
+                    break
+                case "cl1051":
+                    regions = metadataService.getCapad2014Regions()
+                    break
+                case "cl2015":
+                    regions = metadataService.getIndigenousProtectedAreaRegions()
+                    break
+                case "cl2010":
+                    regions = metadataService.getIndigenousLandUseAgreements()
+                    break
+                default:
+                    regions = []
             }
+            if (regions) render regions as JSON
+            else render status: 404
         }
         else {
             render "error: you must supply a layer pid"

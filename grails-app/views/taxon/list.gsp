@@ -24,9 +24,11 @@
             <h1 title="${grailsApplication.config.include.appName} - Visual explorer - ${rank} list">${grailsApplication.config.include.appName} - Visual explorer - ${rank} list</h1>
             <br/>
         </g:if>
-        <nav id="breadcrumb"><ol>
-            <li><a href="${searchPage}">Search</a></li>
-            <li class="last"><i>Results by family</i></li></ol>
+        <nav id="breadcrumb">
+            <ol class="breadcrumb">
+                <li><a href="${searchPage}">Search</a> <span class="divider">/</span></li>
+                <li class="active">Results by family</li>
+            </ol>
         </nav>
 
         <h2>Results for ${queryDescription ?: 'Australia'}</h2>
@@ -224,6 +226,21 @@
                     "/taxon/" + which + "?taxa=" + checked + "&key=${key}";
                 }
             });
+
+//            // fix some heights
+//            var rows = $('table.taxonList > tbody > tr');
+//
+//            rows.each(function(i, row) {
+//                var jRow = $(row);
+//                var max = getMaxOfArray(jRow.find('td.genera table.genera td img.thumb').map(function (i, e) { return e.naturalHeight }));
+//                if (max > 350) max = 350;
+//                if (max > 0) jRow.find('td.mainImage > a').css('height',max+'px');
+//            });
+//
+//            function getMaxOfArray(numArray) {
+//                return Math.max.apply(null, numArray);
+//            }
+
             tviewer.init(serverUrl);
         });
     </script>

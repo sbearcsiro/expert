@@ -23,9 +23,11 @@
             <h1 title="${grailsApplication.config.include.appName} - Visual explorer - species list">${grailsApplication.config.include.appName} - Visual explorer - species list</h1>
             <br/>
         </g:if>
-        <nav id="breadcrumb"><ol>
-            <li><a href="${searchPage}">Search</a></li>
-            <li class="last"><i>Results by species</i></li></ol>
+        <nav id="breadcrumb">
+            <ul class="breadcrumb">
+                <li><a href="${searchPage}">Search</a> <span class="divider">/</span></li>
+                <li class="active">Results by species</li>
+            </ul>
         </nav>
 
         <h2>Results for ${queryDescription ?: 'Australia'}</h2>
@@ -71,8 +73,7 @@
             <th style="text-align:center;vertical-align:middle;">Representative image</th>
             <th style="padding-left:60px;">Distribution<br>
                 <g:if test="${!grailsApplication.config.include.modelInfo.url == null}">
-                    <a target="_maps"
-                       href="${grailsApplication.config.distribution.search.baseUrl}/distributionModelling">About maps</a>
+                    <g:link target="_maps" controller="search" action="distributionModelling">About maps</g:link>
                 </g:if>
                 <g:if test="${grailsApplication.config.include.modelInfo.url != null}">
                     <a target="_maps" href="${grailsApplication.config.include.modelInfo.url}">About maps</a>
@@ -157,8 +158,7 @@
                                 <img src="${grailsApplication.config.grails.serverURL}/distribution/show/${it.gidx}"
                                      alt/><br>
                                 <g:if test="${!grailsApplication.config.include.modelInfo.url == null}">
-                                    <a target="_maps"
-                                       href="${grailsApplication.config.distribution.search.baseUrl}/distributionModelling">About the map</a>
+                                    <g:link target="_maps" controller="search" action="distributionModelling">About the map</g:link>
                                 </g:if>
                                 <g:if test="${grailsApplication.config.include.modelInfo.url != null}">
                                     <a target="_maps"
