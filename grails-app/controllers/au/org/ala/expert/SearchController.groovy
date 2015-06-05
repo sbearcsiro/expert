@@ -189,6 +189,12 @@ class SearchController {
                 case "cl1051":
                     regions = metadataService.getCapad2014Regions()
                     break
+                case "cl916":
+                    regions = metadataService.getNRMRegions()
+                    break
+                case "cl1048":
+                    regions = metadataService.getIBRARegions()
+                    break
                 case "cl2015":
                     regions = metadataService.getIndigenousProtectedAreaRegions()
                     break
